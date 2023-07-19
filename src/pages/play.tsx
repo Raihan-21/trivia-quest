@@ -49,7 +49,7 @@ const play = ({ questions }: { questions: any[] }) => {
             {questions[currentQuestion].question.text}
           </Text>
           {choices.map((choice, i) => (
-            <Box key={i}>
+            <Box key={i} backgroundColor={"white"}>
               <Text>{choice}</Text>
             </Box>
           ))}
