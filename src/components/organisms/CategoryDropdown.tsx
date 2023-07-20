@@ -1,5 +1,8 @@
-import { Box, Collapse, useDisclosure } from "@chakra-ui/react";
+import { Box, Collapse, Flex, useDisclosure } from "@chakra-ui/react";
 import React from "react";
+
+import { motion } from "framer-motion";
+import { GoChevronRight } from "react-icons/go";
 
 const CategoryDropdown = ({
   group,
@@ -20,9 +23,19 @@ const CategoryDropdown = ({
       cursor={"pointer"}
       height={"fit-content"}
     >
-      <Box onClick={onToggle} borderBottom={5} borderColor={"black"}>
+      <Flex
+        onClick={onToggle}
+        borderBottom={5}
+        borderColor={"black"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+        columnGap={1}
+      >
         {groupName}
-      </Box>
+        <motion.div animate={{ rotateZ: isOpen ? 90 : 0 }}>
+          <GoChevronRight />
+        </motion.div>
+      </Flex>
       <Collapse in={isOpen}>
         {group[groupName].map((category: string, i: number) => (
           <Box

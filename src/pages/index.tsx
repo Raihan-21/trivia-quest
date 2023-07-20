@@ -72,9 +72,6 @@ export default function Home() {
   const [fetchCategories, categoriesData, categoriesLoading] = useFetch(
     "https://the-trivia-api.com/v2/categories"
   );
-  const [fetchTotalTag, totalTagData, totalTagLoading] = useFetch(
-    "https://the-trivia-api.com/v2/totals-per-tag"
-  );
   const goToStep = useCallback(
     (name: string) => {
       setSteps(
@@ -90,7 +87,6 @@ export default function Home() {
   );
   useEffect(() => {
     fetchCategories();
-    fetchTotalTag();
     // if (categoriesData) setTags(categoriesData.slice(0, 19));
   }, [steps[2].active]);
   useEffect(() => {
@@ -228,8 +224,6 @@ export default function Home() {
                 </motion.div>
               </Flex>
             </motion.div>
-            {/* </Box> */}
-            {/* </motion.div> */}
           </Flex>
         )}
       </AnimatePresence>

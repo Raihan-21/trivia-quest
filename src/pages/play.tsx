@@ -1,5 +1,5 @@
 import useFetch from "@/hooks/useFetch";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 import axios from "axios";
@@ -36,7 +36,6 @@ const play = ({ questions }: { questions: any[] }) => {
       ...questions[currentQuestion].incorrectAnswers,
       questions[currentQuestion].correctAnswer,
     ];
-    console.log(mixedChoices);
     for (let i = mixedChoices.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       let temp = mixedChoices[i];
@@ -53,11 +52,21 @@ const play = ({ questions }: { questions: any[] }) => {
           <Text color={"white"} className={ubuntu.className} fontSize={20}>
             {questions[currentQuestion].question.text}
           </Text>
-          {choices.map((choice, i) => (
-            <Box key={i} backgroundColor={"white"}>
-              <Text>{choice}</Text>
-            </Box>
-          ))}
+          <VStack spacing={3}>
+            {choices.map((choice, i) => (
+              <Box
+                key={i}
+                borderRadius={10}
+                paddingY={1}
+                paddingX={4}
+                backgroundColor={"white"}
+                cursor={"pointer"}
+                width={"fit-content"}
+              >
+                <Text>{choice}</Text>
+              </Box>
+            ))}
+          </VStack>
         </Box>
       </Flex>
     </Box>
