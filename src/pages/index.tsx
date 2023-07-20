@@ -242,14 +242,14 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 1 }}
             >
               <StepHeader text="Select categories :" />
-              <Input
+              {/* <Input
                 backgroundColor={"white"}
                 marginBottom={5}
                 value={tagInput}
                 onChange={(e) => {
                   setTagInput(e.target.value);
                 }}
-              />
+              /> */}
               {/* <Flex columnGap={5}>
                 {!!selectedTags.length &&
                   selectedTags.map((tag: string, i) => (
