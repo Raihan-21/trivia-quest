@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { AnimatePresence, motion } from "framer-motion";
 import useFetch from "@/hooks/useFetch";
+import StepHeader from "@/components/molecules/StepHeader";
 
 export default function Home() {
   const [steps, setSteps] = useState([
@@ -24,6 +25,11 @@ export default function Home() {
 
       active: false,
     },
+    {
+      value: "step-4",
+
+      active: false,
+    },
   ]);
   const [onClickedPlay, setOnClickedPlay] = useState(false);
   const [onPlay, setOnPlay] = useState(false);
@@ -33,6 +39,23 @@ export default function Home() {
   const [tagInput, setTagInput] = useState("");
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  const [difficulties, setDifficulties] = useState([
+    {
+      label: "Easy",
+      value: "easy",
+    },
+    {
+      label: "Medium",
+      value: "medium",
+    },
+    {
+      label: "Hard",
+      value: "hard",
+    },
+  ]);
+
+  const [selectedDifficulty, setselectedDifficulty] = useState("");
   const [fetchTags, tagsData, tagLoading] = useFetch(
     "https://the-trivia-api.com/v2/tags"
   );
@@ -127,9 +150,10 @@ export default function Home() {
                 animate={{ scale: 1, originX: 0.5, originY: 0.5 }}
                 transition={{ duration: 0.5, delay: 0.9 }}
               >
-                <Text color={"white"} fontSize={20}>
+                <StepHeader text="Do you want to choose categories for your quest?" />
+                {/* <Text color={"white"} fontSize={20}>
                   Do you want to choose categories for your quest?
-                </Text>
+                </Text> */}
               </motion.div>
             </motion.div>
             <motion.div
@@ -151,6 +175,7 @@ export default function Home() {
                       borderRadius={5}
                       fontSize={"large"}
                       cursor={"pointer"}
+                      className={stayPixel.className}
                       onClick={() => {
                         setWithCategory(true);
                         goToStep("step-3");
@@ -174,6 +199,7 @@ export default function Home() {
                       borderRadius={5}
                       fontSize={"large"}
                       cursor={"pointer"}
+                      className={stayPixel.className}
                       onClick={() => {
                         setWithoutCategory(false);
                         goToStep("step-3");
@@ -198,9 +224,7 @@ export default function Home() {
               animate={{ scale: 1 }}
               transition={{ duration: 0.5, delay: 1 }}
             >
-              <Text fontSize={20} color={"white"}>
-                Select your categories:
-              </Text>
+              <StepHeader text="Select categories :" />
               <Input
                 backgroundColor={"white"}
                 marginBottom={5}
@@ -258,6 +282,81 @@ export default function Home() {
                   ..and More
                 </Text>
               )}
+              {!!selectedTags.length && (
+                <Flex justifyContent={"center"}>
+                  <Text
+                    backgroundColor={"yellow.400"}
+                    paddingY={2}
+                    paddingX={4}
+                    width={"fit-content"}
+                    borderRadius={5}
+                    cursor={"pointer"}
+                    className={stayPixel.className}
+                    onClick={() => {
+                      goToStep("step-4");
+                    }}
+                  >
+                    Continue
+                  </Text>
+                </Flex>
+              )}
+            </motion.div>
+          </Flex>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {steps[3].active && (
+          <Flex flexDirection={"column"} alignItems={"center"} paddingTop={40}>
+            <motion.div
+              initial={{ scale: 0, originX: 0.5, originY: 0.5 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, delay: 1 }}
+            >
+              <Text fontSize={20} color={"white"}>
+                Select difficulty:
+              </Text>
+              <Flex flexDirection={"column"} alignItems={"center"} rowGap={2}>
+                {difficulties.map((difficulty) => (
+                  <motion.div whileTap={{ scale: 0.8 }}>
+                    <Text
+                      backgroundColor={
+                        selectedDifficulty === difficulty.value
+                          ? "green.300"
+                          : "white"
+                      }
+                      paddingY={2}
+                      paddingX={4}
+                      width={"fit-content"}
+                      borderRadius={5}
+                      cursor={"pointer"}
+                      onClick={() => {
+                        setselectedDifficulty(difficulty.value);
+                      }}
+                    >
+                      {difficulty.label}
+                    </Text>
+                  </motion.div>
+                ))}
+
+                {/* <Text
+                  backgroundColor={"white"}
+                  paddingY={2}
+                  paddingX={4}
+                  width={"fit-content"}
+                  borderRadius={5}
+                >
+                  Medium
+                </Text>
+                <Text
+                  backgroundColor={"white"}
+                  paddingY={2}
+                  paddingX={4}
+                  width={"fit-content"}
+                  borderRadius={5}
+                >
+                  Hard
+                </Text> */}
+              </Flex>
               {!!selectedTags.length && (
                 <Flex justifyContent={"center"}>
                   <Text
