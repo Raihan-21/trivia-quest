@@ -210,7 +210,7 @@ export default function Home() {
                 }}
               />
               <Flex columnGap={5}>
-                {selectedTags.length &&
+                {!!selectedTags.length &&
                   selectedTags.map((tag: string) => (
                     <Box
                       borderRadius={10}
@@ -258,17 +258,19 @@ export default function Home() {
                   ..and More
                 </Text>
               )}
-              <Flex justifyContent={"center"}>
-                <Text
-                  backgroundColor={"yellow.400"}
-                  paddingY={2}
-                  paddingX={4}
-                  width={"fit-content"}
-                  borderRadius={5}
-                >
-                  Continue
-                </Text>
-              </Flex>
+              {!!selectedTags.length && (
+                <Flex justifyContent={"center"}>
+                  <Text
+                    backgroundColor={"yellow.400"}
+                    paddingY={2}
+                    paddingX={4}
+                    width={"fit-content"}
+                    borderRadius={5}
+                  >
+                    Continue
+                  </Text>
+                </Flex>
+              )}
             </motion.div>
           </Flex>
         )}
