@@ -1,5 +1,3 @@
-import Image from "next/image";
-import { Inter } from "next/font/google";
 import {
   Box,
   Collapse,
@@ -19,6 +17,8 @@ import StepHeader from "@/components/molecules/StepHeader";
 import ContinueButton from "@/components/molecules/ContinueButton";
 import { useRouter } from "next/router";
 import CategoryDropdown from "@/components/organisms/CategoryDropdown";
+
+import { RxCross2 } from "react-icons/rx";
 
 export default function Home() {
   const [steps, setSteps] = useState([
@@ -242,23 +242,24 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 1 }}
             >
               <StepHeader text="Select categories :" />
-              {/* <Input
-                backgroundColor={"white"}
+              <Flex
+                columnGap={5}
+                rowGap={3}
                 marginBottom={5}
-                value={tagInput}
-                onChange={(e) => {
-                  setTagInput(e.target.value);
-                }}
-              /> */}
-              {/* <Flex columnGap={5}>
+                maxWidth={"500px"}
+                flexWrap={"wrap"}
+              >
                 {!!selectedTags.length &&
                   selectedTags.map((tag: string, i) => (
-                    <Box
+                    <Flex
                       borderRadius={10}
                       paddingY={1}
                       paddingX={4}
                       backgroundColor={"green.300"}
                       cursor={"pointer"}
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                      columnGap={2}
                       className={stayPixel.className}
                       onClick={() => {
                         setSelectedTags(
@@ -269,47 +270,27 @@ export default function Home() {
                       }}
                       key={i}
                     >
-                      {tag}
-                    </Box>
+                      {tag.replaceAll("_", " ")} <RxCross2 />
+                    </Flex>
                   ))}
-              </Flex> */}
+              </Flex>
               <Flex
                 flexWrap={"wrap"}
                 maxWidth={"500px"}
                 columnGap={5}
-                rowGap={2}
-                marginTop={5}
+                rowGap={3}
               >
                 {!categoriesLoading &&
                   Object.keys(categoriesData).map((tag: string, i: number) => (
-                    <CategoryDropdown group={categoriesData} groupName={tag} />
-                    // <Box
-                    //   borderRadius={10}
-                    //   paddingY={1}
-                    //   paddingX={4}
-                    //   backgroundColor={"white"}
-                    //   cursor={"pointer"}
-                    //   onClick={() => {
-                    //     setSelectedTags([...selectedTags, tag]);
-                    //   }}
-                    //   key={i}
-                    // >
-                    //   <Box onClick={onToggle}>{tag}</Box>
-                    //   <Collapse in={isOpen}>
-                    //     {categoriesData[tag].map(
-                    //       (category: string, i: number) => (
-                    //         <Box key={i}>{category}</Box>
-                    //       )
-                    //     )}
-                    //   </Collapse>
-                    // </Box>
+                    <CategoryDropdown
+                      group={categoriesData}
+                      groupName={tag}
+                      onCategoryClick={(category) => {
+                        setSelectedTags([...selectedTags, category]);
+                      }}
+                    />
                   ))}
               </Flex>
-              {!tagInput && (
-                <Text fontSize={20} color={"white"}>
-                  ..and More
-                </Text>
-              )}
               {!!selectedTags.length && (
                 <ContinueButton
                   onClick={() => {
