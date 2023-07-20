@@ -4,10 +4,15 @@ import React, { useEffect, useState } from "react";
 
 import axios from "axios";
 import { ubuntu } from "@/fonts/font";
+import { queryGenerator } from "@/helpers/helper";
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (context: any) => {
+  const queryString = queryGenerator(context.query);
+  console.log(queryString);
   try {
-    const res = await axios.get("https://the-trivia-api.com/v2/questions");
+    const res = await axios.get(
+      "https://the-trivia-api.com/v2/questions" + queryString
+    );
     return {
       props: {
         questions: res.data,

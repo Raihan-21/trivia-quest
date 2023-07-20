@@ -7,6 +7,8 @@ import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import useFetch from "@/hooks/useFetch";
 import StepHeader from "@/components/molecules/StepHeader";
+import ContinueButton from "@/components/molecules/ContinueButton";
+import { useRouter } from "next/router";
 
 export default function Home() {
   const [steps, setSteps] = useState([
@@ -59,6 +61,9 @@ export default function Home() {
   const [fetchTags, tagsData, tagLoading] = useFetch(
     "https://the-trivia-api.com/v2/tags"
   );
+  const [fetchTotalTag, totalTagData, totalTagLoading] = useFetch(
+    "https://the-trivia-api.com/v2/totals-per-tag"
+  );
   const goToStep = useCallback(
     (name: string) => {
       setSteps(
@@ -74,6 +79,7 @@ export default function Home() {
   );
   useEffect(() => {
     fetchTags();
+    fetchTotalTag();
     if (tagsData) setTags(tagsData.slice(0, 19));
   }, [steps[2].active]);
   useEffect(() => {
@@ -82,7 +88,7 @@ export default function Home() {
         tagsData.filter((tag: string) => tag.includes(tagInput)).slice(0, 19)
       );
   }, [tagInput]);
-
+  const router = useRouter();
   return (
     <Box minHeight={"100vh"} width={"100vw"} backgroundColor={"purple.800"}>
       <AnimatePresence>
@@ -235,13 +241,14 @@ export default function Home() {
               />
               <Flex columnGap={5}>
                 {!!selectedTags.length &&
-                  selectedTags.map((tag: string) => (
+                  selectedTags.map((tag: string, i) => (
                     <Box
                       borderRadius={10}
                       paddingY={1}
                       paddingX={4}
                       backgroundColor={"green.300"}
                       cursor={"pointer"}
+                      className={stayPixel.className}
                       onClick={() => {
                         setSelectedTags(
                           selectedTags.filter(
@@ -249,6 +256,7 @@ export default function Home() {
                           )
                         );
                       }}
+                      key={i}
                     >
                       {tag}
                     </Box>
@@ -262,7 +270,7 @@ export default function Home() {
                 marginTop={5}
               >
                 {!tagLoading &&
-                  tags.map((tag: string) => (
+                  tags.map((tag: string, i) => (
                     <Box
                       borderRadius={10}
                       paddingY={1}
@@ -272,8 +280,9 @@ export default function Home() {
                       onClick={() => {
                         setSelectedTags([...selectedTags, tag]);
                       }}
+                      key={i}
                     >
-                      {tag}
+                      {tag} ({totalTagData[tag]})
                     </Box>
                   ))}
               </Flex>
@@ -283,22 +292,11 @@ export default function Home() {
                 </Text>
               )}
               {!!selectedTags.length && (
-                <Flex justifyContent={"center"}>
-                  <Text
-                    backgroundColor={"yellow.400"}
-                    paddingY={2}
-                    paddingX={4}
-                    width={"fit-content"}
-                    borderRadius={5}
-                    cursor={"pointer"}
-                    className={stayPixel.className}
-                    onClick={() => {
-                      goToStep("step-4");
-                    }}
-                  >
-                    Continue
-                  </Text>
-                </Flex>
+                <ContinueButton
+                  onClick={() => {
+                    goToStep("step-4");
+                  }}
+                />
               )}
             </motion.div>
           </Flex>
@@ -312,23 +310,29 @@ export default function Home() {
               animate={{ scale: 1 }}
               transition={{ duration: 0.5, delay: 1 }}
             >
-              <Text fontSize={20} color={"white"}>
-                Select difficulty:
-              </Text>
-              <Flex flexDirection={"column"} alignItems={"center"} rowGap={2}>
-                {difficulties.map((difficulty) => (
-                  <motion.div whileTap={{ scale: 0.8 }}>
+              <StepHeader text="Select Difficulty :" />
+              <Flex
+                flexDirection={"column"}
+                alignItems={"center"}
+                rowGap={3}
+                marginTop={5}
+                marginBottom={5}
+              >
+                {difficulties.map((difficulty, i) => (
+                  <motion.div whileTap={{ scale: 0.8 }} key={i}>
                     <Text
                       backgroundColor={
                         selectedDifficulty === difficulty.value
                           ? "green.300"
                           : "white"
                       }
-                      paddingY={2}
-                      paddingX={4}
+                      paddingY={3}
+                      paddingX={10}
                       width={"fit-content"}
                       borderRadius={5}
                       cursor={"pointer"}
+                      className={stayPixel.className}
+                      fontSize={20}
                       onClick={() => {
                         setselectedDifficulty(difficulty.value);
                       }}
@@ -337,38 +341,15 @@ export default function Home() {
                     </Text>
                   </motion.div>
                 ))}
-
-                {/* <Text
-                  backgroundColor={"white"}
-                  paddingY={2}
-                  paddingX={4}
-                  width={"fit-content"}
-                  borderRadius={5}
-                >
-                  Medium
-                </Text>
-                <Text
-                  backgroundColor={"white"}
-                  paddingY={2}
-                  paddingX={4}
-                  width={"fit-content"}
-                  borderRadius={5}
-                >
-                  Hard
-                </Text> */}
               </Flex>
               {!!selectedTags.length && (
-                <Flex justifyContent={"center"}>
-                  <Text
-                    backgroundColor={"yellow.400"}
-                    paddingY={2}
-                    paddingX={4}
-                    width={"fit-content"}
-                    borderRadius={5}
-                  >
-                    Continue
-                  </Text>
-                </Flex>
+                <ContinueButton
+                  onClick={() => {
+                    router.push(
+                      `/play?tags=${selectedTags}&difficulties=${selectedDifficulty}`
+                    );
+                  }}
+                />
               )}
             </motion.div>
           </Flex>
