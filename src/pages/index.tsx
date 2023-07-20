@@ -1,6 +1,15 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
-import { Box, Flex, Grid, GridItem, Input, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Collapse,
+  Flex,
+  Grid,
+  GridItem,
+  Input,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { stayPixel } from "@/fonts/font";
 import { useCallback, useEffect, useState } from "react";
 
@@ -9,6 +18,7 @@ import useFetch from "@/hooks/useFetch";
 import StepHeader from "@/components/molecules/StepHeader";
 import ContinueButton from "@/components/molecules/ContinueButton";
 import { useRouter } from "next/router";
+import CategoryDropdown from "@/components/organisms/CategoryDropdown";
 
 export default function Home() {
   const [steps, setSteps] = useState([
@@ -57,6 +67,7 @@ export default function Home() {
     },
   ]);
 
+  const { isOpen, onToggle } = useDisclosure();
   const [selectedDifficulty, setselectedDifficulty] = useState("");
   const [fetchCategories, categoriesData, categoriesLoading] = useFetch(
     "https://the-trivia-api.com/v2/categories"
@@ -270,20 +281,28 @@ export default function Home() {
                 marginTop={5}
               >
                 {!categoriesLoading &&
-                  categoriesData.map((tag: string, i: number) => (
-                    <Box
-                      borderRadius={10}
-                      paddingY={1}
-                      paddingX={4}
-                      backgroundColor={"white"}
-                      cursor={"pointer"}
-                      onClick={() => {
-                        setSelectedTags([...selectedTags, tag]);
-                      }}
-                      key={i}
-                    >
-                      {tag} ({totalTagData[tag]})
-                    </Box>
+                  Object.keys(categoriesData).map((tag: string, i: number) => (
+                    <CategoryDropdown group={categoriesData} groupName={tag} />
+                    // <Box
+                    //   borderRadius={10}
+                    //   paddingY={1}
+                    //   paddingX={4}
+                    //   backgroundColor={"white"}
+                    //   cursor={"pointer"}
+                    //   onClick={() => {
+                    //     setSelectedTags([...selectedTags, tag]);
+                    //   }}
+                    //   key={i}
+                    // >
+                    //   <Box onClick={onToggle}>{tag}</Box>
+                    //   <Collapse in={isOpen}>
+                    //     {categoriesData[tag].map(
+                    //       (category: string, i: number) => (
+                    //         <Box key={i}>{category}</Box>
+                    //       )
+                    //     )}
+                    //   </Collapse>
+                    // </Box>
                   ))}
               </Flex>
               {!tagInput && (
