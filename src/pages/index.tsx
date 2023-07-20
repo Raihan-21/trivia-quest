@@ -258,20 +258,20 @@ export default function Home() {
                   ..and More
                 </Text>
               )}
+              <Flex justifyContent={"center"}>
+                <Text
+                  backgroundColor={"yellow.400"}
+                  paddingY={2}
+                  paddingX={4}
+                  width={"fit-content"}
+                  borderRadius={5}
+                >
+                  Continue
+                </Text>
+              </Flex>
             </motion.div>
           </Flex>
         )}
-        <Flex justifyContent={"center"}>
-          <Text
-            backgroundColor={"yellow.400"}
-            paddingY={2}
-            paddingX={4}
-            width={"fit-content"}
-            borderRadius={5}
-          >
-            Continue
-          </Text>
-        </Flex>
       </AnimatePresence>
     </Box>
   );
