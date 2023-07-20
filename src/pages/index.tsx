@@ -58,8 +58,8 @@ export default function Home() {
   ]);
 
   const [selectedDifficulty, setselectedDifficulty] = useState("");
-  const [fetchTags, tagsData, tagLoading] = useFetch(
-    "https://the-trivia-api.com/v2/tags"
+  const [fetchCategories, categoriesData, categoriesLoading] = useFetch(
+    "https://the-trivia-api.com/v2/categories"
   );
   const [fetchTotalTag, totalTagData, totalTagLoading] = useFetch(
     "https://the-trivia-api.com/v2/totals-per-tag"
@@ -78,15 +78,15 @@ export default function Home() {
     [steps]
   );
   useEffect(() => {
-    fetchTags();
+    fetchCategories();
     fetchTotalTag();
-    if (tagsData) setTags(tagsData.slice(0, 19));
+    // if (categoriesData) setTags(categoriesData.slice(0, 19));
   }, [steps[2].active]);
   useEffect(() => {
-    if (tagsData)
-      setTags(
-        tagsData.filter((tag: string) => tag.includes(tagInput)).slice(0, 19)
-      );
+    // if (categoriesData)
+    //   setTags(
+    //     categoriesData.filter((tag: string) => tag.includes(tagInput)).slice(0, 19)
+    //   );
   }, [tagInput]);
   const router = useRouter();
   return (
@@ -239,7 +239,7 @@ export default function Home() {
                   setTagInput(e.target.value);
                 }}
               />
-              <Flex columnGap={5}>
+              {/* <Flex columnGap={5}>
                 {!!selectedTags.length &&
                   selectedTags.map((tag: string, i) => (
                     <Box
@@ -261,7 +261,7 @@ export default function Home() {
                       {tag}
                     </Box>
                   ))}
-              </Flex>
+              </Flex> */}
               <Flex
                 flexWrap={"wrap"}
                 maxWidth={"500px"}
@@ -269,8 +269,8 @@ export default function Home() {
                 rowGap={2}
                 marginTop={5}
               >
-                {!tagLoading &&
-                  tags.map((tag: string, i) => (
+                {!categoriesLoading &&
+                  categoriesData.map((tag: string, i: number) => (
                     <Box
                       borderRadius={10}
                       paddingY={1}
