@@ -16,6 +16,7 @@ const CategoryDropdown = ({
       paddingX={4}
       backgroundColor={"white"}
       cursor={"pointer"}
+      height={"fit-content"}
     >
       <Box onClick={onToggle}>{groupName}</Box>
       <Collapse in={isOpen}>
