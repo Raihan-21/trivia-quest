@@ -100,7 +100,7 @@ export default function Home() {
       <AnimatePresence>
         {steps[0].active && (
           <Flex flexDirection={"column"} alignItems={"center"}>
-            {score && (
+            {!!score && (
               <Box position={"absolute"} right={10} top={10}>
                 <Text color={"yellow.300"} fontSize={30} fontWeight={"bold"}>
                   Total Score: {score}
