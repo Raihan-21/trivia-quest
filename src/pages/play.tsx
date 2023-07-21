@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { ubuntu } from "@/fonts/font";
 import { queryGenerator } from "@/helpers/helper";
+import { useRouter } from "next/router";
 
 export const getServerSideProps = async (context: any) => {
   const queryString = queryGenerator(context.query);
@@ -32,6 +33,7 @@ const play = ({ questions }: { questions: any[] }) => {
   const [time, setTime] = useState(10);
   const [score, setScore] = useState(0);
   const [sessionEnd, setSessionEnd] = useState(false);
+  const router = useRouter();
   const mixChoices = useCallback(() => {
     const mixedChoices = [
       ...questions[currentQuestion].incorrectAnswers,
@@ -56,6 +58,17 @@ const play = ({ questions }: { questions: any[] }) => {
     (answer: string) => {
       if (answer === questions[currentQuestion].correctAnswer) {
         setQuestionStatus((prevState) => ({ ...prevState, isCorrect: true }));
+        switch (router.query.difficulties) {
+          case "easy":
+            setScore(score + 50);
+            break;
+          case "medium":
+            setScore(score + 100);
+            break;
+          default:
+            setScore(score + 200);
+            break;
+        }
       }
     },
     [currentQuestion]
@@ -88,8 +101,18 @@ const play = ({ questions }: { questions: any[] }) => {
   }, [revealAnswer]);
 
   return (
-    <Box minHeight={"100vh"} width={"100vw"} backgroundColor={"purple.800"}>
-      <Flex justifyContent={"center"} paddingTop={40}>
+    <Box
+      minHeight={"100vh"}
+      width={"100vw"}
+      backgroundColor={"purple.800"}
+      paddingTop={"100px"}
+    >
+      <Box marginLeft={100} marginBottom={10}>
+        <Text color={"yellow.400"} fontSize={25}>
+          {score}
+        </Text>
+      </Box>
+      <Flex justifyContent={"center"}>
         {!sessionEnd ? (
           <Box maxWidth={"500px"}>
             <Progress
