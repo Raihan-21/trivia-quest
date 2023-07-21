@@ -96,6 +96,7 @@ export default function Home() {
       // width={"100vw"}
       backgroundColor={"purple.800"}
       paddingBottom={10}
+      paddingX={10}
     >
       <AnimatePresence>
         {steps[0].active && (
