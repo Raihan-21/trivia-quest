@@ -45,11 +45,6 @@ export default function Home() {
     },
   ]);
   const [onClickedPlay, setOnClickedPlay] = useState(false);
-  const [onPlay, setOnPlay] = useState(false);
-  const [withCategory, setWithCategory] = useState(false);
-  const [withoutCategory, setWithoutCategory] = useState(false);
-  const [tags, setTags] = useState<string[]>([]);
-  const [tagInput, setTagInput] = useState("");
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
@@ -198,7 +193,6 @@ export default function Home() {
                       cursor={"pointer"}
                       className={stayPixel.className}
                       onClick={() => {
-                        setWithCategory(true);
                         goToStep("step-3");
                       }}
                     >
@@ -222,7 +216,6 @@ export default function Home() {
                       cursor={"pointer"}
                       className={stayPixel.className}
                       onClick={() => {
-                        setWithoutCategory(false);
                         goToStep("step-4");
                       }}
                     >
