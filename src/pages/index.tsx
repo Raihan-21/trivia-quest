@@ -70,6 +70,7 @@ export default function Home() {
 
   const { isOpen, onToggle } = useDisclosure();
   const [selectedDifficulty, setselectedDifficulty] = useState("");
+  const [score, setScore] = useState(0);
   const [fetchCategories, categoriesData, categoriesLoading] = useFetch(
     "https://the-trivia-api.com/v2/categories"
   );
@@ -91,11 +92,8 @@ export default function Home() {
     // if (categoriesData) setTags(categoriesData.slice(0, 19));
   }, [steps[2].active]);
   useEffect(() => {
-    // if (categoriesData)
-    //   setTags(
-    //     categoriesData.filter((tag: string) => tag.includes(tagInput)).slice(0, 19)
-    //   );
-  }, [tagInput]);
+    setScore(Number(localStorage.getItem("high-score")));
+  }, []);
   const router = useRouter();
   return (
     <Box
@@ -107,6 +105,13 @@ export default function Home() {
       <AnimatePresence>
         {steps[0].active && (
           <Flex flexDirection={"column"} alignItems={"center"}>
+            {score && (
+              <Box position={"absolute"} right={10} top={10}>
+                <Text color={"yellow.300"} fontSize={30} fontWeight={"bold"}>
+                  Total Score: {score}
+                </Text>
+              </Box>
+            )}
             <motion.div
               exit={{ scale: 0, originX: 0.5, originY: "50%" }}
               transition={{ duration: 0.6 }}
