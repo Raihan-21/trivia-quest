@@ -283,6 +283,7 @@ export default function Home() {
                       onCategoryClick={(category) => {
                         setSelectedTags([...selectedTags, category]);
                       }}
+                      key={i}
                     />
                   ))}
               </Flex>

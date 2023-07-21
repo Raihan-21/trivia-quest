@@ -27,7 +27,7 @@ export const getServerSideProps = async (context: any) => {
   }
 };
 
-const play = ({ questions }: { questions: any[] }) => {
+const Play = ({ questions }: { questions: any[] }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [choices, setChoices] = useState<any[]>([]);
   const [questionStatus, setQuestionStatus] = useState({
@@ -163,9 +163,9 @@ const play = ({ questions }: { questions: any[] }) => {
                       scale: questionStatus.correctAnswer === choice ? 0.8 : 1,
                       y: questionStatus.correctAnswer !== choice ? 10 : 0,
                     }}
+                    key={i}
                   >
                     <Box
-                      key={i}
                       borderRadius={10}
                       paddingY={1}
                       paddingX={4}
@@ -195,7 +195,7 @@ const play = ({ questions }: { questions: any[] }) => {
         ) : (
           <Box maxWidth={"500px"}>
             <Text fontSize={15} color={"white"} className={stayPixel.className}>
-              Yup,It's over,
+              Yup,It&apos;s over,
             </Text>
             <Text fontSize={30} color={"white"} className={stayPixel.className}>
               Your Score is :
@@ -256,4 +256,4 @@ const play = ({ questions }: { questions: any[] }) => {
   );
 };
 
-export default play;
+export default Play;
