@@ -19,6 +19,7 @@ import { useRouter } from "next/router";
 import CategoryDropdown from "@/components/organisms/CategoryDropdown";
 
 import { RxCross2 } from "react-icons/rx";
+import { queryGenerator } from "@/helpers/helper";
 
 export default function Home() {
   const [steps, setSteps] = useState([
@@ -169,9 +170,6 @@ export default function Home() {
                 transition={{ duration: 0.5, delay: 0.9 }}
               >
                 <StepHeader text="Do you want to choose categories for your quest?" />
-                {/* <Text color={"white"} fontSize={20}>
-                  Do you want to choose categories for your quest?
-                </Text> */}
               </motion.div>
             </motion.div>
             <motion.div
@@ -220,7 +218,7 @@ export default function Home() {
                       className={stayPixel.className}
                       onClick={() => {
                         setWithoutCategory(false);
-                        goToStep("step-3");
+                        goToStep("step-4");
                       }}
                     >
                       No
@@ -341,15 +339,17 @@ export default function Home() {
                   </motion.div>
                 ))}
               </Flex>
-              {!!selectedTags.length && (
-                <ContinueButton
-                  onClick={() => {
-                    router.push(
-                      `/play?tags=${selectedTags}&difficulties=${selectedDifficulty}`
-                    );
-                  }}
-                />
-              )}
+
+              <ContinueButton
+                onClick={() => {
+                  const params = {
+                    categories: selectedTags,
+                    difficulties: selectedDifficulty,
+                  };
+                  const queryString = queryGenerator(params);
+                  router.push(`/play` + queryString);
+                }}
+              />
             </motion.div>
           </Flex>
         )}

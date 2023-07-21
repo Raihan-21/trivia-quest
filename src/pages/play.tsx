@@ -3,9 +3,13 @@ import { Box, Flex, Progress, Text, VStack } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
 
 import axios from "axios";
-import { ubuntu } from "@/fonts/font";
+import { stayPixel, ubuntu } from "@/fonts/font";
 import { queryGenerator } from "@/helpers/helper";
 import { useRouter } from "next/router";
+
+import { motion } from "framer-motion";
+
+import { RxReload } from "react-icons/rx";
 
 export const getServerSideProps = async (context: any) => {
   const queryString = queryGenerator(context.query);
@@ -27,12 +31,14 @@ const play = ({ questions }: { questions: any[] }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [choices, setChoices] = useState<any[]>([]);
   const [questionStatus, setQuestionStatus] = useState({
+    correctAnswer: "",
     isChoosed: false,
     isCorrect: false,
   });
   const [time, setTime] = useState(10);
   const [score, setScore] = useState(0);
   const [sessionEnd, setSessionEnd] = useState(false);
+
   const router = useRouter();
   const mixChoices = useCallback(() => {
     const mixedChoices = [
@@ -46,6 +52,10 @@ const play = ({ questions }: { questions: any[] }) => {
       mixedChoices[j] = temp;
     }
     setChoices(mixedChoices);
+    setQuestionStatus((prevState) => ({
+      ...prevState,
+      correctAnswer: questions[currentQuestion].correctAnswer,
+    }));
   }, [currentQuestion]);
   const nextQuestion = useCallback(() => {
     if (currentQuestion === 9) {
@@ -96,9 +106,23 @@ const play = ({ questions }: { questions: any[] }) => {
     if (questionStatus.isChoosed)
       setTimeout(() => {
         nextQuestion();
-        setQuestionStatus({ isCorrect: false, isChoosed: false });
+        setQuestionStatus({
+          isCorrect: false,
+          isChoosed: false,
+          correctAnswer: "",
+        });
       }, 1000);
   }, [revealAnswer]);
+
+  useEffect(() => {
+    const highScore = localStorage.getItem("high-score");
+    if (highScore)
+      localStorage.setItem(
+        "high-score",
+        (Number(highScore) + score).toString()
+      );
+    else localStorage.setItem("high-score", score.toString());
+  }, [sessionEnd]);
 
   return (
     <Box
@@ -106,58 +130,125 @@ const play = ({ questions }: { questions: any[] }) => {
       width={"100vw"}
       backgroundColor={"purple.800"}
       paddingTop={"100px"}
+      paddingX={10}
     >
-      <Box marginLeft={100} marginBottom={10}>
-        <Text color={"yellow.400"} fontSize={25}>
-          {score}
-        </Text>
-      </Box>
       <Flex justifyContent={"center"}>
         {!sessionEnd ? (
-          <Box maxWidth={"500px"}>
-            <Progress
-              value={time}
-              colorScheme="green"
-              marginX={"auto"}
-              marginBottom={5}
-            />
-            <Text
-              color={"white"}
-              className={ubuntu.className}
-              fontSize={20}
-              marginBottom={5}
-            >
-              {questions[currentQuestion].question.text}
-            </Text>
-            <VStack spacing={3}>
-              {choices.map((choice, i) => (
-                <Box
-                  key={i}
-                  borderRadius={10}
-                  paddingY={1}
-                  paddingX={4}
-                  backgroundColor={
-                    questionStatus.isChoosed ? revealAnswer(choice, i) : "white"
-                  }
-                  cursor={"pointer"}
-                  width={"fit-content"}
-                  onClick={() => {
-                    // setSelectedAnswer(choice);
-                    setQuestionStatus((prevState) => ({
-                      ...prevState,
-                      isChoosed: true,
-                    }));
-                    checkAnswer(choice);
-                  }}
-                >
-                  <Text>{choice}</Text>
-                </Box>
-              ))}
-            </VStack>
+          <Box>
+            <Box marginBottom={10} width={"full"}>
+              <Text color={"yellow.400"} fontSize={25} fontWeight={"bold"}>
+                Score:
+                {" " + score}
+              </Text>
+            </Box>
+            <Box width={["full", "500px"]}>
+              <Progress
+                value={time}
+                colorScheme="green"
+                marginX={"auto"}
+                marginBottom={5}
+              />
+              <Text
+                color={"white"}
+                className={ubuntu.className}
+                fontSize={20}
+                marginBottom={5}
+              >
+                {questions[currentQuestion].question.text}
+              </Text>
+              <VStack spacing={3}>
+                {choices.map((choice, i) => (
+                  <motion.div
+                    whileTap={{
+                      scale: questionStatus.correctAnswer === choice ? 0.8 : 1,
+                      y: questionStatus.correctAnswer !== choice ? 10 : 0,
+                    }}
+                  >
+                    <Box
+                      key={i}
+                      borderRadius={10}
+                      paddingY={1}
+                      paddingX={4}
+                      backgroundColor={
+                        questionStatus.isChoosed
+                          ? revealAnswer(choice, i)
+                          : "white"
+                      }
+                      cursor={"pointer"}
+                      width={"fit-content"}
+                      onClick={() => {
+                        // setSelectedAnswer(choice);
+                        setQuestionStatus((prevState) => ({
+                          ...prevState,
+                          isChoosed: true,
+                        }));
+                        checkAnswer(choice);
+                      }}
+                    >
+                      <Text>{choice}</Text>
+                    </Box>
+                  </motion.div>
+                ))}
+              </VStack>
+            </Box>
           </Box>
         ) : (
           <Box maxWidth={"500px"}>
-            <Text>It's over</Text>
+            <Text fontSize={15} color={"white"} className={stayPixel.className}>
+              Yup,It's over,
+            </Text>
+            <Text fontSize={30} color={"white"} className={stayPixel.className}>
+              Your Score is :
+            </Text>
+            <Text fontSize={45} color={"yellow.300"} textAlign={"center"}>
+              {score}
+            </Text>
+            <Flex justifyContent={"center"} columnGap={3}>
+              <Flex justifyContent={"center"} marginTop={5}>
+                <motion.div whileTap={{ scale: 0.8 }}>
+                  <Flex
+                    alignItems={"center"}
+                    backgroundColor={"yellow.300"}
+                    paddingY={1}
+                    paddingX={4}
+                    borderRadius={5}
+                    width={"fit-content"}
+                    columnGap={2}
+                    cursor={"pointer"}
+                    onClick={() => {
+                      router.reload();
+                    }}
+                  >
+                    <RxReload />
+                    <Text className={stayPixel.className} fontSize={20}>
+                      Retry
+                    </Text>
+                  </Flex>
+                </motion.div>
+              </Flex>
+              <Flex justifyContent={"center"} marginTop={5}>
+                <motion.div whileTap={{ scale: 0.8 }}>
+                  <Flex
+                    alignItems={"center"}
+                    backgroundColor={"yellow.300"}
+                    paddingY={1}
+                    paddingX={4}
+                    borderRadius={5}
+                    width={"fit-content"}
+                    columnGap={2}
+                    cursor={"pointer"}
+                    onClick={() => {
+                      router.push("/");
+                    }}
+                  >
+                    <RxReload />
+                    <Text className={stayPixel.className} fontSize={20}>
+                      Go back home
+                    </Text>
+                  </Flex>
+                </motion.div>
+              </Flex>
+            </Flex>
           </Box>
         )}
       </Flex>
