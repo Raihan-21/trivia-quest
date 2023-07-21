@@ -97,7 +97,12 @@ export default function Home() {
   }, [tagInput]);
   const router = useRouter();
   return (
-    <Box minHeight={"100vh"} width={"100vw"} backgroundColor={"purple.800"}>
+    <Box
+      minHeight={"100vh"}
+      // width={"100vw"}
+      backgroundColor={"purple.800"}
+      paddingBottom={10}
+    >
       <AnimatePresence>
         {steps[0].active && (
           <Flex flexDirection={"column"} alignItems={"center"}>

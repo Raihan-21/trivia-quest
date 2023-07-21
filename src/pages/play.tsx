@@ -1,6 +1,6 @@
 import useFetch from "@/hooks/useFetch";
-import { Box, Flex, Text, VStack } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { Box, Flex, Progress, Text, VStack } from "@chakra-ui/react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import axios from "axios";
 import { ubuntu } from "@/fonts/font";
@@ -8,7 +8,6 @@ import { queryGenerator } from "@/helpers/helper";
 
 export const getServerSideProps = async (context: any) => {
   const queryString = queryGenerator(context.query);
-  console.log(queryString);
   try {
     const res = await axios.get(
       "https://the-trivia-api.com/v2/questions" + queryString
@@ -27,11 +26,12 @@ const play = ({ questions }: { questions: any[] }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [nextQuestion, setNextQuestion] = useState(true);
   const [choices, setChoices] = useState<any[]>([]);
-  //   const [fetch, data, isLoading] = useFetch("");
-  //   useEffect(() => {
-  //     fetch();
-  //   }, []);
-  useEffect(() => {
+  const [questionStatus, setQuestionStatus] = useState({
+    isChoosed: false,
+    isCorrect: false,
+  });
+  const [time, setTime] = useState(10);
+  const mixChoices = useCallback(() => {
     const mixedChoices = [
       ...questions[currentQuestion].incorrectAnswers,
       questions[currentQuestion].correctAnswer,
@@ -43,13 +43,61 @@ const play = ({ questions }: { questions: any[] }) => {
       mixedChoices[j] = temp;
     }
     setChoices(mixedChoices);
-  }, [nextQuestion]);
+  }, [currentQuestion]);
+  const checkAnswer = useCallback(
+    (answer: string) => {
+      if (answer === questions[currentQuestion].correctAnswer) {
+        setQuestionStatus((prevState) => ({ ...prevState, isCorrect: true }));
+      }
+
+      // setCurrentQuestion((prevState) => prevState + 1);
+    },
+    [currentQuestion]
+  );
+  const revealAnswer = useCallback(
+    (choice: string, i: number) => {
+      if (choice === questions[currentQuestion].correctAnswer)
+        return "green.300";
+      return "red.500";
+    },
+    [questionStatus, checkAnswer, currentQuestion]
+  );
+  useEffect(() => {
+    mixChoices();
+    setTime(0);
+  }, [currentQuestion]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(time + 10);
+    }, 1000);
+    if (time === 100) setCurrentQuestion(currentQuestion + 1);
+    return () => clearInterval(interval);
+  }, [time]);
+  useEffect(() => {
+    if (questionStatus.isChoosed)
+      setTimeout(() => {
+        setCurrentQuestion((prevState) => prevState + 1);
+        setQuestionStatus({ isCorrect: false, isChoosed: false });
+      }, 1000);
+  }, [revealAnswer]);
 
   return (
     <Box minHeight={"100vh"} width={"100vw"} backgroundColor={"purple.800"}>
       <Flex justifyContent={"center"} paddingTop={40}>
         <Box>
-          <Text color={"white"} className={ubuntu.className} fontSize={20}>
+          <Progress
+            value={time}
+            aria-valuemax={10}
+            maxWidth={"500px"}
+            marginX={"auto"}
+            marginBottom={5}
+          />
+          <Text
+            color={"white"}
+            className={ubuntu.className}
+            fontSize={20}
+            marginBottom={5}
+          >
             {questions[currentQuestion].question.text}
           </Text>
           <VStack spacing={3}>
@@ -59,9 +107,19 @@ const play = ({ questions }: { questions: any[] }) => {
                 borderRadius={10}
                 paddingY={1}
                 paddingX={4}
-                backgroundColor={"white"}
+                backgroundColor={
+                  questionStatus.isChoosed ? revealAnswer(choice, i) : "white"
+                }
                 cursor={"pointer"}
                 width={"fit-content"}
+                onClick={() => {
+                  // setSelectedAnswer(choice);
+                  setQuestionStatus((prevState) => ({
+                    ...prevState,
+                    isChoosed: true,
+                  }));
+                  checkAnswer(choice);
+                }}
               >
                 <Text>{choice}</Text>
               </Box>
