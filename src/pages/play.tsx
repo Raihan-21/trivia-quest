@@ -24,13 +24,14 @@ export const getServerSideProps = async (context: any) => {
 
 const play = ({ questions }: { questions: any[] }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [nextQuestion, setNextQuestion] = useState(true);
   const [choices, setChoices] = useState<any[]>([]);
   const [questionStatus, setQuestionStatus] = useState({
     isChoosed: false,
     isCorrect: false,
   });
   const [time, setTime] = useState(10);
+  const [score, setScore] = useState(0);
+  const [sessionEnd, setSessionEnd] = useState(false);
   const mixChoices = useCallback(() => {
     const mixedChoices = [
       ...questions[currentQuestion].incorrectAnswers,
@@ -44,13 +45,18 @@ const play = ({ questions }: { questions: any[] }) => {
     }
     setChoices(mixedChoices);
   }, [currentQuestion]);
+  const nextQuestion = useCallback(() => {
+    if (currentQuestion === 9) {
+      setSessionEnd(true);
+      return;
+    }
+    setCurrentQuestion(currentQuestion + 1);
+  }, [currentQuestion]);
   const checkAnswer = useCallback(
     (answer: string) => {
       if (answer === questions[currentQuestion].correctAnswer) {
         setQuestionStatus((prevState) => ({ ...prevState, isCorrect: true }));
       }
-
-      // setCurrentQuestion((prevState) => prevState + 1);
     },
     [currentQuestion]
   );
@@ -70,13 +76,13 @@ const play = ({ questions }: { questions: any[] }) => {
     const interval = setInterval(() => {
       setTime(time + 10);
     }, 1000);
-    if (time === 100) setCurrentQuestion(currentQuestion + 1);
+    if (time === 100) nextQuestion();
     return () => clearInterval(interval);
   }, [time]);
   useEffect(() => {
     if (questionStatus.isChoosed)
       setTimeout(() => {
-        setCurrentQuestion((prevState) => prevState + 1);
+        nextQuestion();
         setQuestionStatus({ isCorrect: false, isChoosed: false });
       }, 1000);
   }, [revealAnswer]);
@@ -84,48 +90,53 @@ const play = ({ questions }: { questions: any[] }) => {
   return (
     <Box minHeight={"100vh"} width={"100vw"} backgroundColor={"purple.800"}>
       <Flex justifyContent={"center"} paddingTop={40}>
-        <Box>
-          <Progress
-            value={time}
-            aria-valuemax={10}
-            maxWidth={"500px"}
-            marginX={"auto"}
-            marginBottom={5}
-          />
-          <Text
-            color={"white"}
-            className={ubuntu.className}
-            fontSize={20}
-            marginBottom={5}
-          >
-            {questions[currentQuestion].question.text}
-          </Text>
-          <VStack spacing={3}>
-            {choices.map((choice, i) => (
-              <Box
-                key={i}
-                borderRadius={10}
-                paddingY={1}
-                paddingX={4}
-                backgroundColor={
-                  questionStatus.isChoosed ? revealAnswer(choice, i) : "white"
-                }
-                cursor={"pointer"}
-                width={"fit-content"}
-                onClick={() => {
-                  // setSelectedAnswer(choice);
-                  setQuestionStatus((prevState) => ({
-                    ...prevState,
-                    isChoosed: true,
-                  }));
-                  checkAnswer(choice);
-                }}
-              >
-                <Text>{choice}</Text>
-              </Box>
-            ))}
-          </VStack>
-        </Box>
+        {!sessionEnd ? (
+          <Box maxWidth={"500px"}>
+            <Progress
+              value={time}
+              colorScheme="green"
+              marginX={"auto"}
+              marginBottom={5}
+            />
+            <Text
+              color={"white"}
+              className={ubuntu.className}
+              fontSize={20}
+              marginBottom={5}
+            >
+              {questions[currentQuestion].question.text}
+            </Text>
+            <VStack spacing={3}>
+              {choices.map((choice, i) => (
+                <Box
+                  key={i}
+                  borderRadius={10}
+                  paddingY={1}
+                  paddingX={4}
+                  backgroundColor={
+                    questionStatus.isChoosed ? revealAnswer(choice, i) : "white"
+                  }
+                  cursor={"pointer"}
+                  width={"fit-content"}
+                  onClick={() => {
+                    // setSelectedAnswer(choice);
+                    setQuestionStatus((prevState) => ({
+                      ...prevState,
+                      isChoosed: true,
+                    }));
+                    checkAnswer(choice);
+                  }}
+                >
+                  <Text>{choice}</Text>
+                </Box>
+              ))}
+            </VStack>
+          </Box>
+        ) : (
+          <Box maxWidth={"500px"}>
+            <Text>It's over</Text>
+          </Box>
+        )}
       </Flex>
     </Box>
   );
