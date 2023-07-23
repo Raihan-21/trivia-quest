@@ -7,7 +7,7 @@ import { stayPixel, ubuntu } from "@/fonts/font";
 import { queryGenerator } from "@/helpers/helper";
 import { useRouter } from "next/router";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { RxReload } from "react-icons/rx";
 
@@ -36,7 +36,11 @@ const Play = ({ questions }: { questions: any[] }) => {
     isCorrect: false,
   });
   const [time, setTime] = useState(10);
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState({
+    total: 0,
+    increment: 0,
+    hasUpdated: false,
+  });
   const [sessionEnd, setSessionEnd] = useState(false);
 
   const router = useRouter();
@@ -70,15 +74,31 @@ const Play = ({ questions }: { questions: any[] }) => {
         setQuestionStatus((prevState) => ({ ...prevState, isCorrect: true }));
         switch (router.query.difficulties) {
           case "easy":
-            setScore(score + 50);
+            setScore((prevState) => ({
+              ...prevState,
+              increment: 50,
+              total: score.total + 50,
+            }));
             break;
           case "medium":
-            setScore(score + 100);
+            setScore((prevState) => ({
+              ...prevState,
+              increment: 100,
+              total: score.total + 100,
+            }));
             break;
           default:
-            setScore(score + 200);
+            setScore((prevState) => ({
+              ...prevState,
+              increment: 200,
+              total: score.total + 200,
+            }));
             break;
         }
+        setScore((prevState) => ({ ...prevState, hasUpdated: true }));
+        setTimeout(() => {
+          setScore((prevState) => ({ ...prevState, hasUpdated: false }));
+        }, 1000);
       }
     },
     [currentQuestion]
@@ -119,9 +139,9 @@ const Play = ({ questions }: { questions: any[] }) => {
     if (highScore)
       localStorage.setItem(
         "high-score",
-        (Number(highScore) + score).toString()
+        (Number(highScore) + score.total).toString()
       );
-    else localStorage.setItem("high-score", score.toString());
+    else localStorage.setItem("high-score", score.total.toString());
   }, [sessionEnd]);
 
   return (
@@ -135,10 +155,28 @@ const Play = ({ questions }: { questions: any[] }) => {
       <Flex justifyContent={"center"}>
         {!sessionEnd ? (
           <Box>
-            <Box marginBottom={10} width={"full"}>
+            <Box marginBottom={10} width={"fit-content"}>
+              <AnimatePresence>
+                {score.hasUpdated && (
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -20, opacity: 0 }}
+                  >
+                    <Text
+                      color={"yellow.400"}
+                      fontSize={18}
+                      fontWeight={"bold"}
+                      textAlign={"right"}
+                    >
+                      {"+" + score.increment}
+                    </Text>
+                  </motion.div>
+                )}
+              </AnimatePresence>
               <Text color={"yellow.400"} fontSize={25} fontWeight={"bold"}>
                 Score:
-                {" " + score}
+                {" " + score.total}
               </Text>
             </Box>
             <Box width={["full", "500px"]}>
@@ -201,7 +239,7 @@ const Play = ({ questions }: { questions: any[] }) => {
               Your Score is :
             </Text>
             <Text fontSize={45} color={"yellow.300"} textAlign={"center"}>
-              {score}
+              {score.total}
             </Text>
             <Flex justifyContent={"center"} columnGap={3}>
               <Flex justifyContent={"center"} marginTop={5}>
