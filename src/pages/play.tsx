@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { RxReload } from "react-icons/rx";
+import { FiArrowLeft } from "react-icons/fi";
 
 export const getServerSideProps = async (context: any) => {
   const queryString = queryGenerator(context.query);
@@ -271,7 +272,7 @@ const Play = ({ questions }: { questions: any[] }) => {
                 <motion.div whileTap={{ scale: 0.8 }}>
                   <Flex
                     alignItems={"center"}
-                    backgroundColor={"yellow.300"}
+                    backgroundColor={"red.500"}
                     paddingY={1}
                     paddingX={4}
                     borderRadius={5}
@@ -282,7 +283,7 @@ const Play = ({ questions }: { questions: any[] }) => {
                       router.push("/");
                     }}
                   >
-                    <RxReload />
+                    <FiArrowLeft />
                     <Text className={stayPixel.className} fontSize={20}>
                       Go back home
                     </Text>
