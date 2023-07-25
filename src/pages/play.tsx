@@ -155,7 +155,7 @@ const Play = ({ questions }: { questions: any[] }) => {
       <Flex justifyContent={"center"}>
         {!sessionEnd ? (
           <Box>
-            <Box marginBottom={10} width={"fit-content"}>
+            <Box marginBottom={10} width={"fit-content"} position={"relative"}>
               <AnimatePresence>
                 {score.hasUpdated && (
                   <motion.div
@@ -168,6 +168,9 @@ const Play = ({ questions }: { questions: any[] }) => {
                       fontSize={18}
                       fontWeight={"bold"}
                       textAlign={"right"}
+                      position={"absolute"}
+                      right={0}
+                      top={-5}
                     >
                       {"+" + score.increment}
                     </Text>
