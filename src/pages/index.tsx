@@ -118,6 +118,7 @@ export default function Home() {
                 textAlign={"center"}
                 color={"white"}
                 paddingTop={20}
+                data-testid="title"
               >
                 Trivia Quest
               </Text>
@@ -153,6 +154,7 @@ export default function Home() {
                       })
                     );
                   }}
+                  data-testid="play-button"
                 >
                   <Text fontSize={"2xl"}>Play now</Text>
                 </Box>

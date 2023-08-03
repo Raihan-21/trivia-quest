@@ -17,6 +17,7 @@ describe("Category Dropdown", () => {
             onCategoryClick={() => {}}
           />
         );
+        expect(screen.getByText(data)).toBeInTheDocument();
       });
       expect(screen.getByTestId("category-container")).toHaveLength(
         response.data.length
