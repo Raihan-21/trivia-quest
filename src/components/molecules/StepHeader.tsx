@@ -4,7 +4,12 @@ import React from "react";
 
 const StepHeader = ({ text }: { text: string }) => {
   return (
-    <Text fontSize={25} color={"white"} className={stayPixel.className}>
+    <Text
+      fontSize={25}
+      color={"white"}
+      className={stayPixel.className}
+      data-testid="step-header"
+    >
       {text}
     </Text>
   );

@@ -6,7 +6,7 @@ import { stayPixel } from "@/fonts/font";
 const ContinueButton = ({ onClick }: { onClick: () => void }) => {
   return (
     <motion.div whileTap={{ scale: 0.8 }}>
-      <Flex justifyContent={"center"} onClick={onClick}>
+      <Flex justifyContent={"center"} onClick={onClick} data-testid="button">
         <Text
           backgroundColor={"yellow.400"}
           paddingY={2}
