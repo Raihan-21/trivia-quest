@@ -22,6 +22,7 @@ const CategoryDropdown = ({
       backgroundColor={"white"}
       cursor={"pointer"}
       height={"fit-content"}
+      data-testid="category-container"
     >
       <Flex
         onClick={onToggle}
