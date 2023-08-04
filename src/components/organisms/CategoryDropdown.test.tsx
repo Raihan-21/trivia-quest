@@ -1,9 +1,15 @@
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import CategoryDropdown from "./CategoryDropdown";
+import React from "react";
+
 import axios from "axios";
+
 describe("Category Dropdown", () => {
   test("Render component", async () => {
+    const setState = jest.fn();
+    jest.spyOn(React, "useState").mockImplementationOnce(() => [[], setState]);
+
     // render(<CategoryDropdown />)
     try {
       const response = await axios.get(

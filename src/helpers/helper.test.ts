@@ -14,6 +14,10 @@ describe("Query Generator", () => {
     };
     expect(queryGenerator(singleParam)).toMatch("?param1=test1&param2=test2");
   });
+  test("Empty params value", () => {
+    const emptyParam = { empty: "" };
+    expect(queryGenerator(emptyParam)).toMatch("");
+  });
   test("Without params", () => {
     const emptyParam = {};
     expect(queryGenerator(emptyParam)).toMatch("");

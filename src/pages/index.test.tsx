@@ -8,16 +8,16 @@ describe("Play app flow", () => {
   useRouter.mockImplementation(() => ({
     events: {
       on: jest.fn(),
-      off: jest.fn,
+      off: jest.fn(),
     },
   }));
-  test("render button", () => {
+  test("initial render", () => {
     render(<Home />);
+
+    expect(screen.getByTestId("title")).toBeInTheDocument();
+
     const playButton = screen.getByTestId("play-button");
     expect(playButton).toBeInTheDocument();
-    fireEvent.click(playButton);
-    expect(screen.getByText("Do you want to choose categories for your quest?"))
-      .toBeInTheDocument;
   });
   test("Click play with categories", () => {
     render(<Home />);

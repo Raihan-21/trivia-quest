@@ -45,6 +45,7 @@ const CategoryDropdown = ({
               onCategoryClick(category);
             }}
             textTransform={"capitalize"}
+            data-testid="sub-category"
           >
             {category.replaceAll("_", " ")}
           </Box>
