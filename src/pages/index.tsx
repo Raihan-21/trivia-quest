@@ -22,6 +22,7 @@ import { RxCross2 } from "react-icons/rx";
 import { queryGenerator } from "@/helpers/helper";
 
 export default function Home() {
+  const router = useRouter();
   const [steps, setSteps] = useState([
     {
       value: "step-1",
@@ -89,7 +90,7 @@ export default function Home() {
   useEffect(() => {
     setScore(Number(localStorage.getItem("high-score")));
   }, []);
-  const router = useRouter();
+
   return (
     <Box
       minHeight={"100vh"}
@@ -198,6 +199,7 @@ export default function Home() {
                       onClick={() => {
                         goToStep("step-3");
                       }}
+                      data-testid="yes-button"
                     >
                       Yes
                     </Box>
@@ -221,6 +223,7 @@ export default function Home() {
                       onClick={() => {
                         goToStep("step-4");
                       }}
+                      data-testid="no-button"
                     >
                       No
                     </Box>
