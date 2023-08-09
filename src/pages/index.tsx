@@ -20,6 +20,11 @@ import CategoryDropdown from "@/components/organisms/CategoryDropdown";
 
 import { RxCross2 } from "react-icons/rx";
 import { queryGenerator } from "@/helpers/helper";
+import Image from "next/image";
+
+import GroundImage from "@/assets/img/ground.png";
+
+import styles from "@/assets/styles/Index.module.css";
 
 export default function Home() {
   const router = useRouter();
@@ -98,7 +103,27 @@ export default function Home() {
       backgroundColor={"purple.800"}
       paddingBottom={10}
       paddingX={10}
+      position={"relative"}
+      className={styles.container}
     >
+      <Box
+        width={"100%"}
+        height={"100px"}
+        position={"absolute"}
+        top={10}
+        left={0}
+        overflowX={"hidden"}
+      >
+        <motion.img
+          src="/img/cloud.png"
+          width={100}
+          height={100}
+          animate={{ left: "100%" }}
+          initial={{ left: 0 }}
+          transition={{ repeat: Infinity, duration: 50 }}
+          className={styles.cloud}
+        />
+      </Box>
       <AnimatePresence>
         {steps[0].active && (
           <Flex flexDirection={"column"} alignItems={"center"}>
@@ -359,6 +384,7 @@ export default function Home() {
           </Flex>
         )}
       </AnimatePresence>
+      {/* <Image height={540} width={360} src={GroundImage} alt="ground" /> */}
     </Box>
   );
 }
