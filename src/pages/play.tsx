@@ -24,7 +24,8 @@ export const getServerSideProps = async (context: any) => {
       },
     };
   } catch (error) {
-    throw error;
+    console.log(error);
+    // throw error;
   }
 };
 
