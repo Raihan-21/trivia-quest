@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Home from "./index";
+import Home from "./index.page";
 
 jest.mock("next/router", () => ({ useRouter: jest.fn() }));
 describe("Play app flow", () => {
